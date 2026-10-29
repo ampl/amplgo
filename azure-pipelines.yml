@@ -3,6 +3,8 @@ pool:
 
 variables:
   LD_LIBRARY_PATH: '$(System.DefaultWorkingDirectory)/ampl/lib/amd64:$LD_LIBRARY_PATH'
+  CGO_CFLAGS: '-I$(System.DefaultWorkingDirectory)/ampl/include'
+  CGO_LDFLAGS: '-L$(System.DefaultWorkingDirectory)/ampl/lib/amd64'
   BUNDLES_URL: 'https://portal.ampl.com/dl/amplce/'
   LINUX64_BUNDLE_NAME: 'ampl.linux64.tgz'
   MACOS64_BUNDLE_NAME: 'ampl.macos64.tgz'
@@ -18,7 +20,7 @@ steps:
   displayName: Install AMPL
 - task: GoTool@0
   inputs:
-    version: '1.18'
+    version: '1.20'
 - task: Go@0
   inputs:
     command: 'get'
@@ -27,6 +29,7 @@ steps:
 - task: Go@0
   inputs:
     command: 'build'
+    arguments: './...'
     workingDirectory: '$(System.DefaultWorkingDirectory)'
   displayName: Build ampl.go
 - task: Go@0
@@ -40,7 +43,7 @@ steps:
 - task: Go@0
   inputs:
     command: 'run'
-    arguments: 'main.go'
+    arguments: './examples/quickstart'
     workingDirectory: '$(System.DefaultWorkingDirectory)'
   displayName: Main ampl.go
   env:

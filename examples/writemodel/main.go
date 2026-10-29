@@ -1,10 +1,10 @@
-// examples/writemodel.go
+// examples/writemodel/main.go
 package main
 
 import (
 	"fmt"
 
-	"github.com/ampl/ampl.go/ampl"
+	"github.com/ampl/amplgo/ampl"
 )
 
 func makeAmplModel(model *ampl.Ampl, numvars int, unfeasible bool, unbounded bool) {

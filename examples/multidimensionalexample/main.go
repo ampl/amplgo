@@ -1,10 +1,10 @@
-// examples/multidimensionalexample.go
+// examples/multidimensionalexample/main.go
 package main
 
 import (
 	"fmt"
 
-	"github.com/ampl/ampl.go/ampl"
+	"github.com/ampl/amplgo/ampl"
 )
 
 func main() {

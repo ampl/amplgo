@@ -1,11 +1,11 @@
-// examples/trackingmodel.go
+// examples/trackingmodel/main.go
 package main
 
 import (
 	"fmt"
 	"os"
 
-	"github.com/ampl/ampl.go/ampl"
+	"github.com/ampl/amplgo/ampl"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package tests
 import (
   "testing"
   "github.com/stretchr/testify/assert"
-  "github.com/ampl/ampl.go/ampl"
+  "github.com/ampl/amplgo/ampl"
 )
 
 func LoadDietModel(ampl *ampl.Ampl) {

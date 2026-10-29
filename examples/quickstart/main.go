@@ -1,9 +1,9 @@
-// main.go in root directory
+// examples/quickstart/main.go
 package main
 
 import (
     "fmt"
-    "github.com/ampl/ampl.go/ampl"
+    "github.com/ampl/amplgo/ampl"
 )
 
 func main() {
