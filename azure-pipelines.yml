@@ -1,0 +1,55 @@
+pool:
+   vmImage: 'ubuntu-latest'
+
+variables:
+  LD_LIBRARY_PATH: '$(System.DefaultWorkingDirectory)/ampl/lib/amd64:$LD_LIBRARY_PATH'
+  BUNDLES_URL: 'https://portal.ampl.com/dl/amplce/'
+  LINUX64_BUNDLE_NAME: 'ampl.linux64.tgz'
+  MACOS64_BUNDLE_NAME: 'ampl.macos64.tgz'
+  MSWIN64_BUNDLE_NAME: 'ampl.mswin64.zip'
+
+steps: 
+- task: UsePythonVersion@0
+- bash: |
+    python dev/updatelib.py
+  displayName: Update libraries
+- bash: |
+    bash dev/download-ampl.sh $BUNDLES_URL/$LINUX64_BUNDLE_NAME
+  displayName: Install AMPL
+- task: GoTool@0
+  inputs:
+    version: '1.18'
+- task: Go@0
+  inputs:
+    command: 'get'
+    arguments: '-d'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
+- task: Go@0
+  inputs:
+    command: 'build'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
+  displayName: Build ampl.go
+- task: Go@0
+  inputs:
+    command: 'test'
+    arguments: './tests'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
+  displayName: Test ampl.go
+  env:
+    PATH: '$(System.DefaultWorkingDirectory)/dev/ampl:$(PATH)'
+- task: Go@0
+  inputs:
+    command: 'run'
+    arguments: 'main.go'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
+  displayName: Main ampl.go
+  env:
+    PATH: '$(System.DefaultWorkingDirectory)/dev/ampl:$(PATH)'
+- script: |
+    mkdir -p $(Build.ArtifactStagingDirectory)/lib
+    cp -d $(Build.SourcesDirectory)/dev/ampl/amplapi/lib/libampl.so* \
+          $(Build.ArtifactStagingDirectory)/lib/
+  displayName: Copy AMPL libraries
+- task: PublishBuildArtifacts@1
+  inputs:
+    artifactName: drop
