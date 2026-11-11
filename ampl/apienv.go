@@ -1,6 +1,10 @@
 package ampl
 
-import "runtime/debug"
+import (
+	"runtime"
+	"runtime/debug"
+	"strings"
+)
 
 const modulePath = "github.com/ampl/amplgo"
 
@@ -14,6 +18,7 @@ func newAPIEnvironment() (*Environment, error) {
 		"AMPL_API":         "amplgo",
 		"AMPL_API_VERSION": moduleVersion(),
 		"AMPL_API_ENV":     "",
+		"AMPL_API_RUNTIME": "go/" + strings.TrimPrefix(runtime.Version(), "go"),
 	}
 	for name, value := range vars {
 		if err := env.AddEnvironmentVariable(name, value); err != nil {
