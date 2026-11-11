@@ -15,6 +15,7 @@ import (
 
 type Ampl struct {
   campl *C.AMPL
+  env   *Environment
 }
 
 /*
@@ -24,16 +25,26 @@ Description:
 	Creates a new model from a given environment.
 */
 func New() (*Ampl, error) {
+  env, err := newAPIEnvironment()
+  if err != nil {
+    return nil, err
+  }
 	var campl *C.AMPL
-  errInfo := C.AMPL_Create(&campl)
+  errInfo := C.AMPL_CreateWithEnv(&campl, env.cenv)
 	if errInfo != nil {
+		env.FreeEnv()
 		return nil, amplError(errInfo)
 	}
-  wrapper := &Ampl{campl: campl}
+  wrapper := &Ampl{campl: campl, env: env}
   runtime.SetFinalizer(wrapper, func(ampl *Ampl) {
     if ampl.campl != nil {
       C.AMPL_Free(&ampl.campl)
       ampl.campl = nil
+    }
+    // AMPL uses the environment without copying it, so free it afterwards
+    if ampl.env != nil {
+      ampl.env.FreeEnv()
+      ampl.env = nil
     }
   })
 
